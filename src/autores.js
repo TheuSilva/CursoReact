@@ -1,17 +1,38 @@
-import React, { Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import Header from './header';
+import DataTable from './dataTable';
+import ApiService from './apiService';
 
-const Autores = () =>{
+class Autores extends Component {
 
-    return(
+    constructor(props) {
+        super(props);
 
-        <Fragment>
-            <Header />
-                <h1>Página de Autores</h1>
-        </Fragment>
+        this.state = {
+            nomes: [],
+            titulo: 'Autores'
+        };
+    }
 
-    );
+    componentDidMount(){
+        ApiService.ListaNomes()
+        .then(res =>{
+            this.setState({nomes: [...this.state.nomes, ...res.data]});
+        });
+    }
 
+    render() {
+        return (
+            <Fragment>
+                <Header />
+                <div className="container">
+                    <h1>Página de Autores</h1>
+                    <DataTable dados={this.state.nomes} titulo={this.state.titulo} colunas={['nome']} />
+                </div>
+            </Fragment>
+
+        );
+    }
 }
 
 export default Autores;

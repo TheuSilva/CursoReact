@@ -5,60 +5,58 @@ import Header from './header';
 import Tabela from './tabela';
 import Form from './formulario';
 import PopUp from './popup';
+import ApiService from './apiService';
 
 
 class App extends Component {
 
-  state = {
-    autores: [
-      {
-        nome: 'Paulo',
-        livro: 'React',
-        preco: '1000'
-      },
-      {
-        nome: 'Daniel',
-        livro: 'Java',
-        preco: '99'
-      },
-      {
-        nome: 'Marcos',
-        livro: 'Design',
-        preco: '150'
-      },
-      {
-        nome: 'Bruno',
-        livro: 'DevOps',
-        preco: '100'
-      }
-    ],
-  };
+  constructor(props){
+    super(props);
 
+    this.state = {
+      autores: [],
+    };  
+  }
+  
 
-  removeAutor = index => {
+  removeAutor = id => {
 
     const { autores } = this.state
 
     this.setState(
       {
-        autores: autores.filter((autor, posAtual) => {
+        autores: autores.filter((autor) => {
 
-          return posAtual !== index;
+          return autor.id !== id;
         }),
       }
     );
       PopUp.exibeMensagem("error", "Autor removido com sucesso");
+      ApiService.RemoveAutor(id);
   }
 
   escutadorDeSubmit = autor => {
 
-    this.setState({ autores: [...this.state.autores, autor] });
+    ApiService.CriaAutor(JSON.stringify(autor))
+    .then(res => res.data)
+    .then(autor =>{
+
+      this.setState({ autores: [...this.state.autores, autor] });
 
     PopUp.exibeMensagem("success", "Autor Adicionado com sucesso");
 
+    })
+
   }
 
+  componentDidMount(){
+    ApiService.ListaAutores()
+      .then(res =>{
+        this.setState({autores : [...this.state.autores, ...res.data]})
+      });
+  }
   render() {
+
     return (
       <Fragment>
         <Header />
