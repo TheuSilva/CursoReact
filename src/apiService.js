@@ -1,9 +1,7 @@
 const ApiService = {
 
     ListaAutores: () => {
-
         return fetch('http://localhost:8000/api/autor')
-            .then(res => res.json())
     },
     CriaAutor: autor => {
         return fetch('http://localhost:8000/api/autor',
@@ -11,21 +9,21 @@ const ApiService = {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
                 body: autor
-            })
-            .then(res => res.json());
-    },
+            })},
     ListaNomes: () => {
-        return fetch('http://localhost:8000/api/autor/nome')
-            .then(res => res.json());
-    },
+        return fetch('http://localhost:8000/api/autor/nome')},
     ListaLivros: () => {
-        return fetch('http://localhost:8000/api/autor/livro')
-            .then(res => res.json());
-    },
+        return fetch('http://localhost:8000/api/autor/livro')},
     RemoveAutor: id =>{
         return fetch(`http://localhost:8000/api/autor/${id}`, 
-        {method: 'DELETE', headers: {'content-type': 'application/json'}})
-            .then(res => res.json());
+        {method: 'DELETE', headers: {'content-type': 'application/json'},})
+    },
+
+    TrataErros : res =>{
+        if(!res.ok){
+            throw Error(res.responseText);
+        }
+        return res.json();
     }
 }
 export default ApiService;
